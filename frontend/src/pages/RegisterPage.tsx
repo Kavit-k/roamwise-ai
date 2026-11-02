@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Compass, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Compass, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const RegisterPage: React.FC = () => {
@@ -12,7 +12,7 @@ export const RegisterPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const { signUp } = useAuth();
+  const { signUp, demoSignIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,10 +36,10 @@ export const RegisterPage: React.FC = () => {
       if (error) {
         setErrorMsg(error.message);
       } else {
-        setSuccessMsg('Account created successfully! Check your inbox if email confirmation is enabled, or proceed to sign in.');
+        setSuccessMsg('Account created successfully! Redirecting...');
         setTimeout(() => {
           navigate('/dashboard');
-        }, 1500);
+        }, 1200);
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Registration failed');
@@ -51,12 +51,31 @@ export const RegisterPage: React.FC = () => {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-3xl p-8 border border-slate-100 shadow-floating">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-900 text-white shadow-md shadow-brand-900/20 mb-3">
             <Compass className="w-6 h-6 text-brand-300" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create an Account</h2>
           <p className="text-xs text-slate-500 mt-1">Start planning, saving, and exporting smart travel itineraries</p>
+        </div>
+
+        {/* 1-Click Demo Traveler Access */}
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={() => {
+              demoSignIn();
+              navigate('/dashboard');
+            }}
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-900 to-teal-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-brand-900/15 hover:from-brand-950 hover:to-teal-900 transition-all"
+          >
+            <Sparkles className="w-4 h-4 text-brand-300" />
+            <span>Instant Demo Access &bull; Continue as Guest</span>
+          </button>
+          <div className="relative my-4 flex items-center justify-center">
+            <div className="border-t border-slate-200 w-full" />
+            <span className="bg-white px-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">or register with email</span>
+          </div>
         </div>
 
         {errorMsg && (

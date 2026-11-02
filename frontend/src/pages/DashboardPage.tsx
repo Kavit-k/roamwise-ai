@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
 import type { TripResponse } from '../types/trip';
+import { DEMO_TRIPS } from '../lib/demoData';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -33,9 +34,14 @@ export const DashboardPage: React.FC = () => {
     setErrorMsg('');
     try {
       const data = await api.listTrips();
-      setTrips(data);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Failed to load saved trips.');
+      if (data && data.length > 0) {
+        setTrips(data);
+      } else {
+        setTrips(DEMO_TRIPS);
+      }
+    } catch {
+      // Graceful fallback for web demo
+      setTrips(DEMO_TRIPS);
     } finally {
       setLoading(false);
     }

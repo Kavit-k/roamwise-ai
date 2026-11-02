@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  demoSignIn: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -67,6 +68,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: error ? new Error(error.message) : null };
   };
 
+  const demoSignIn = () => {
+    const demoUser: any = {
+      id: '11111111-1111-1111-1111-111111111111',
+      email: 'traveler@roamwise.ai',
+      user_metadata: { full_name: 'Demo Traveler' },
+    };
+    setUser(demoUser);
+    setSession({ user: demoUser, access_token: 'demo-token' } as any);
+  };
+
   const signOut = async () => {
     if (isSupabaseConfigured) {
       await supabase.auth.signOut();
@@ -85,6 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signIn,
         signUp,
         signOut,
+        demoSignIn,
       }}
     >
       {children}

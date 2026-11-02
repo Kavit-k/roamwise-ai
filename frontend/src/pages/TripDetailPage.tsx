@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import type { TripResponse, Activity } from '../types/trip';
+import { DEMO_TRIPS } from '../lib/demoData';
 import { ActivityModal } from '../components/ActivityModal';
 import { RegenerateDayModal } from '../components/RegenerateDayModal';
 
@@ -52,8 +53,20 @@ export const TripDetailPage: React.FC = () => {
     try {
       const data = await api.getTrip(id);
       setTrip(data);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Failed to retrieve trip details.');
+    } catch {
+      // Check if generated during this web session
+      const savedSession = sessionStorage.getItem(id);
+      if (savedSession) {
+        try {
+          setTrip(JSON.parse(savedSession));
+          return;
+        } catch {
+          // ignore parse error
+        }
+      }
+      // Graceful fallback for web demo
+      const fallback = DEMO_TRIPS.find((t) => t.id === id) || DEMO_TRIPS[0];
+      setTrip(fallback);
     } finally {
       setLoading(false);
     }

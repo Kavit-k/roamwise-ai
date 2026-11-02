@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Compass, Mail, Lock, ArrowRight, AlertCircle, Info, Loader2 } from 'lucide-react';
+import { Compass, Mail, Lock, ArrowRight, AlertCircle, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
@@ -9,7 +9,7 @@ export const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const { signIn, isConfigured } = useAuth();
+  const { signIn, demoSignIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from?.pathname || '/dashboard';
@@ -37,7 +37,7 @@ export const LoginPage: React.FC = () => {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-3xl p-8 border border-slate-100 shadow-floating">
         {/* Brand Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-900 text-white shadow-md shadow-brand-900/20 mb-3">
             <Compass className="w-6 h-6 text-brand-300" />
           </div>
@@ -45,14 +45,24 @@ export const LoginPage: React.FC = () => {
           <p className="text-xs text-slate-500 mt-1">Sign in to access your saved travel itineraries</p>
         </div>
 
-        {!isConfigured && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3">
-            <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div className="text-xs text-amber-800 leading-relaxed">
-              <b>Supabase credentials not detected:</b> Add your <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> to <code>frontend/.env</code>.
-            </div>
+        {/* 1-Click Demo Traveler Access */}
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={() => {
+              demoSignIn();
+              navigate(from, { replace: true });
+            }}
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-900 to-teal-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-brand-900/15 hover:from-brand-950 hover:to-teal-900 transition-all"
+          >
+            <Sparkles className="w-4 h-4 text-brand-300" />
+            <span>Instant Demo Access &bull; Continue as Guest</span>
+          </button>
+          <div className="relative my-4 flex items-center justify-center">
+            <div className="border-t border-slate-200 w-full" />
+            <span className="bg-white px-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">or sign in with supabase</span>
           </div>
-        )}
+        </div>
 
         {errorMsg && (
           <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-xs text-rose-700 font-medium">
